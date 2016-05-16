@@ -25,8 +25,39 @@
 	#define NEG(x) (x)
 #endif
 
-#define LINMATH_H_DEFINE_VEC(n) \
+/*
+* Union vec#_t types support unnamed vector elements access when
+* supported by compiler - that is, for example,
+* 	vec#_t.x = 1.0f;
+* instead of
+* 	vec#_t.i.x = 1.0f;
+* Note that the named syntax is provided in any way for those who
+* doesn't want to use less portable unnamed syntax.
+*/
+
+/* Unnamed structs - since C11; as compiler extensions in older standards. */
+#if !defined(LINMATH_H_VECTOR_UNNAMED) && defined(__STDC_VERSION__)
+	#if (__STDC_VERSION__ >= 201112L) || \
+	  ( defined(__GNUC__) && !defined(__STRICT_ANSI__) )
+		#define LINMATH_H_VECTOR_UNNAMED 1
+	#endif
+#endif
+
+#ifdef LINMATH_H_VECTOR_UNNAMED
+	#define _LINMATH_H_VECTOR_STRUCT(...) \
+		struct {float __VA_ARGS__;}; \
+		struct {float __VA_ARGS__;} i
+#else
+	#define _LINMATH_H_VECTOR_STRUCT(...) \
+		struct {float __VA_ARGS__;} i
+#endif
+
+#define LINMATH_H_DEFINE_VEC(n, ...) \
 typedef float vec##n[n]; \
+typedef union { \
+	vec##n v; \
+	_LINMATH_H_VECTOR_STRUCT(__VA_ARGS__); \
+} vec##n##_t; \
 static inline void vec##n##_add(vec##n r, vec##n a, vec##n b) \
 { \
 	for(int i=0; i<n; ++i) \
@@ -75,9 +106,9 @@ static inline void vec##n##_max(vec##n r, vec##n a, vec##n b) \
 		r[i] = (a[i] > b[i]) ? a[i] : b[i]; \
 }
 
-LINMATH_H_DEFINE_VEC(2)
-LINMATH_H_DEFINE_VEC(3)
-LINMATH_H_DEFINE_VEC(4)
+LINMATH_H_DEFINE_VEC(2, x, y)
+LINMATH_H_DEFINE_VEC(3, x, y, z)
+LINMATH_H_DEFINE_VEC(4, x, y, z, w)
 
 static inline void vec3_mul_cross(vec3 r, vec3 a, vec3 b)
 {
