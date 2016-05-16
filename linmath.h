@@ -115,6 +115,18 @@ LINMATH_H_DEFINE_VEC(2, x, y)
 LINMATH_H_DEFINE_VEC(3, x, y, z)
 LINMATH_H_DEFINE_VEC(4, x, y, z, w)
 
+#ifdef LINMATH_H_STD_BUILDERS
+	#define VEC2(x,y)       (vec2){x,y}
+	#define VEC3(x,y,z)     (vec3){x,y,z}
+	#define VEC4(x,y,z,w)   (vec4){x,y,z,w}
+	#define VEC2T(x,y)      (vec2_t){.v={x,y}}
+	#define VEC3T(x,y,z)    (vec3_t){.v={x,y,z}}
+	#define VEC4T(x,y,z,w)  (vec4_t){.v={x,y,z,w}}
+	#define lVEC2T(x,y)     {.v={x,y}}
+	#define lVEC3T(x,y,z)   {.v={x,y,z}}
+	#define lVEC4T(x,y,z,w) {.v={x,y,z,w}}
+#endif
+
 static inline void vec3_mul_cross(vec3 r, vec3 a, vec3 b)
 {
 	r[0] = a[1]*b[2] - a[2]*b[1];
