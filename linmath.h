@@ -58,6 +58,11 @@ typedef union { \
 	vec##n v; \
 	_LINMATH_H_VECTOR_STRUCT(__VA_ARGS__); \
 } vec##n##_t; \
+static inline void vec##n##_dup(vec##n r, vec##n v) \
+{ \
+	for(int i=0; i<n; ++i) \
+		r[i] = v[i]; \
+} \
 static inline void vec##n##_add(vec##n r, vec##n a, vec##n b) \
 { \
 	for(int i=0; i<n; ++i) \
