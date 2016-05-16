@@ -58,6 +58,12 @@ static inline void vec##n##_norm(vec##n r, vec##n v) \
 	float k = 1.f / vec##n##_len(v); \
 	vec##n##_scale(r, v, k); \
 } \
+static inline void vec##n##_reflect(vec##n r, vec##n v, vec##n o) \
+{ \
+	float p = 2.f * vec##n##_mul_inner(v, o); \
+	for(int i=0; i<n; ++i) \
+		r[i] = v[i] - p*o[i]; \
+} \
 static inline void vec##n##_min(vec##n r, vec##n a, vec##n b) \
 { \
 	for(int i=0; i<n; ++i) \
@@ -80,24 +86,10 @@ static inline void vec3_mul_cross(vec3 r, vec3 a, vec3 b)
 	r[2] = a[0]*b[1] - a[1]*b[0];
 }
 
-static inline void vec3_reflect(vec3 r, vec3 v, vec3 n)
-{
-	float p  = 2.f*vec3_mul_inner(v, n);
-	for(int i=0; i<3; ++i)
-		r[i] = v[i] - p*n[i];
-}
-
 static inline void vec4_mul_cross(vec4 r, vec4 a, vec4 b)
 {
 	vec3_mul_cross(r,a,b);
 	r[3] = 1.f;
-}
-
-static inline void vec4_reflect(vec4 r, vec4 v, vec4 n)
-{
-	float p = 2.f * vec4_mul_inner(v, n);
-	for(int i=0; i<4; ++i)
-		r[i] = v[i] - p*n[i];
 }
 
 typedef vec4 mat4x4[4];
