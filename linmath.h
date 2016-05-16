@@ -15,7 +15,7 @@
   #error linmath.h: tech macro redefined
 #endif
 
-#ifndef MAT4X4_ROW_MAJOR
+#ifndef LINMATH_H_ROW_MAJOR
 	#define M4E(m,c,r) (m[c][r])
 	#define POS(x) (x)
 	#define NEG(x) (-x)
