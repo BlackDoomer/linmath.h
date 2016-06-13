@@ -116,15 +116,28 @@ LINMATH_H_DEFINE_VEC(3, x, y, z)
 LINMATH_H_DEFINE_VEC(4, x, y, z, w)
 
 #ifdef LINMATH_H_STD_BUILDERS
+	//note: there's no macros for plain vectors constant initializers
+	//use default syntax for this purpose: {x,y} / {x,y,z} / {x,y,z,w}
+
+	//function arguments builders for plain vectors
 	#define VEC2(x,y)       (vec2){x,y}
 	#define VEC3(x,y,z)     (vec3){x,y,z}
 	#define VEC4(x,y,z,w)   (vec4){x,y,z,w}
-	#define VEC2T(x,y)      (vec2_t){.v={x,y}}
-	#define VEC3T(x,y,z)    (vec3_t){.v={x,y,z}}
-	#define VEC4T(x,y,z,w)  (vec4_t){.v={x,y,z,w}}
-	#define lVEC2T(x,y)     {.v={x,y}}
-	#define lVEC3T(x,y,z)   {.v={x,y,z}}
-	#define lVEC4T(x,y,z,w) {.v={x,y,z,w}}
+
+	//union types constant initializers, for compile-time initialization
+	#define iVEC2T(x,y)     {.v={x,y}}
+	#define iVEC3T(x,y,z)   {.v={x,y,z}}
+	#define iVEC4T(x,y,z,w) {.v={x,y,z,w}}
+
+	//function arguments builders for union types
+	#define VEC2T(x,y)      (vec2_t)iVEC2T(x,y)
+	#define VEC3T(x,y,z)    (vec3_t)iVEC3T(x,y,z)
+	#define VEC4T(x,y,z,w)  (vec4_t)iVEC4T(x,y,z,w)
+
+	//macros for casting plain vectors to union types
+	#define cVEC2T(v2)      VEC2T(v2[0],v2[1])
+	#define cVEC3T(v3)      VEC3T(v3[0],v3[1],v3[2])
+	#define cVEC4T(v4)      VEC4T(v4[0],v4[1],v4[2],v4[3])
 #endif
 
 static inline void vec3_mul_cross(vec3 r, vec3 a, vec3 b)
