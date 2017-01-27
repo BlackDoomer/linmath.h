@@ -4,6 +4,10 @@
 #include <math.h>
 #include <float.h>
 
+////////////////////////////////////////////////////////////////////////////////
+// Implementation macros
+////////////////////////////////////////////////////////////////////////////////
+
 #ifndef LINMATH_H_NEAR_ZERO
 	#define LINMATH_H_NEAR_ZERO FLT_EPSILON
 #endif
@@ -53,64 +57,69 @@
 #endif
 
 #define LINMATH_H_DEFINE_VEC(n, ...) \
-typedef float vec##n[n]; \
-typedef union { \
-	vec##n v; \
-	__LH_VECTOR_STRUCT(__VA_ARGS__); \
-} vec##n##_t; \
-static inline void vec##n##_dup(vec##n r, vec##n v) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = v[i]; \
-} \
-static inline void vec##n##_add(vec##n r, vec##n a, vec##n b) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = a[i] + b[i]; \
-} \
-static inline void vec##n##_sub(vec##n r, vec##n a, vec##n b) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = a[i] - b[i]; \
-} \
-static inline void vec##n##_scale(vec##n r, vec##n v, float s) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = v[i] * s; \
-} \
-static inline float vec##n##_mul_inner(vec##n a, vec##n b) \
-{ \
-	float p = 0.f; \
-	for(int i=0; i<n; ++i) \
-		p += b[i] * a[i]; \
-	return p; \
-} \
-static inline float vec##n##_len(vec##n v) \
-{ \
-	return sqrtf(vec##n##_mul_inner(v,v)); \
-} \
-static inline void vec##n##_norm(vec##n r, vec##n v) \
-{ \
-	float k = 1.f / vec##n##_len(v); \
-	vec##n##_scale(r, v, k); \
-} \
-static inline void vec##n##_reflect(vec##n r, vec##n v, vec##n o) \
-{ \
-	float p = 2.f * vec##n##_mul_inner(v, o); \
-	for(int i=0; i<n; ++i) \
-		r[i] = v[i] - p*o[i]; \
-} \
-static inline void vec##n##_min(vec##n r, vec##n a, vec##n b) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = (a[i] < b[i]) ? a[i] : b[i]; \
-} \
-static inline void vec##n##_max(vec##n r, vec##n a, vec##n b) \
-{ \
-	for(int i=0; i<n; ++i) \
-		r[i] = (a[i] > b[i]) ? a[i] : b[i]; \
-} \
-extern void __THIS_REQUIRES_A_SEMICOLON(void)
+	typedef float vec##n[n]; \
+	typedef union { \
+		vec##n v; \
+		__LH_VECTOR_STRUCT(__VA_ARGS__); \
+	} vec##n##_t; \
+	static inline void vec##n##_dup(vec##n r, vec##n v) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = v[i]; \
+	} \
+	static inline void vec##n##_add(vec##n r, vec##n a, vec##n b) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = a[i] + b[i]; \
+	} \
+	static inline void vec##n##_sub(vec##n r, vec##n a, vec##n b) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = a[i] - b[i]; \
+	} \
+	static inline void vec##n##_scale(vec##n r, vec##n v, float s) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = v[i] * s; \
+	} \
+	static inline float vec##n##_mul_inner(vec##n a, vec##n b) \
+	{ \
+		float p = 0.f; \
+		for(int i=0; i<n; ++i) \
+			p += b[i] * a[i]; \
+		return p; \
+	} \
+	static inline float vec##n##_len(vec##n v) \
+	{ \
+		return sqrtf(vec##n##_mul_inner(v,v)); \
+	} \
+	static inline void vec##n##_norm(vec##n r, vec##n v) \
+	{ \
+		float k = 1.f / vec##n##_len(v); \
+		vec##n##_scale(r, v, k); \
+	} \
+	static inline void vec##n##_reflect(vec##n r, vec##n v, vec##n o) \
+	{ \
+		float p = 2.f * vec##n##_mul_inner(v, o); \
+		for(int i=0; i<n; ++i) \
+			r[i] = v[i] - p*o[i]; \
+	} \
+	static inline void vec##n##_min(vec##n r, vec##n a, vec##n b) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = (a[i] < b[i]) ? a[i] : b[i]; \
+	} \
+	static inline void vec##n##_max(vec##n r, vec##n a, vec##n b) \
+	{ \
+		for(int i=0; i<n; ++i) \
+			r[i] = (a[i] > b[i]) ? a[i] : b[i]; \
+	} \
+	extern void __THIS_REQUIRES_A_SEMICOLON(void)
+// LINMATH_H_DEFINE_VEC
+
+////////////////////////////////////////////////////////////////////////////////
+// Vectors types: vec2 / vec2_t, vec3 / vec3_t, vec4 / vec4_t
+////////////////////////////////////////////////////////////////////////////////
 
 LINMATH_H_DEFINE_VEC(2, x, y);
 LINMATH_H_DEFINE_VEC(3, x, y, z);
@@ -177,6 +186,10 @@ static inline void vec4_mul_cross(vec4 r, vec4 a, vec4 b)
 	vec3_mul_cross(r,a,b);
 	r[3] = 1.f;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// 4x4 matrices type: mat4x4
+////////////////////////////////////////////////////////////////////////////////
 
 typedef vec4 mat4x4[4];
 
@@ -287,8 +300,9 @@ static inline void mat4x4_translate_in_place(mat4x4 M, float x, float y, float z
 }
 static inline void mat4x4_from_vec3_mul_outer(mat4x4 M, vec3 a, vec3 b)
 {
-	for(int i=0; i<4; ++i) for(int j=0; j<4; ++j)
-		__LH_M4E(M,i,j) = ((i<3) && (j<3)) ? (a[i] * b[j]) : 0.f;
+	for(int i=0; i<4; ++i)
+		for(int j=0; j<4; ++j)
+			__LH_M4E(M,i,j) = ((i<3) && (j<3)) ? (a[i] * b[j]) : 0.f;
 }
 static inline void mat4x4_rotate(mat4x4 R, mat4x4 M, float x, float y, float z, float angle)
 {
@@ -438,34 +452,34 @@ static inline void mat4x4_orthonormalize(mat4x4 R, mat4x4 M)
 
 static inline void mat4x4_frustum(mat4x4 M, float l, float r, float b, float t, float n, float f)
 {
-	__LH_M4E(M,0,0) = 2.f*n/(r-l);
+	__LH_M4E(M,0,0) = 2.f*n / (r-l);
 	__LH_M4E(M,0,1) = __LH_M4E(M,0,2) = __LH_M4E(M,0,3) = 0.f;
 
-	__LH_M4E(M,1,1) = 2.f*n/(t-b);
+	__LH_M4E(M,1,1) = 2.f*n / (t-b);
 	__LH_M4E(M,1,0) = __LH_M4E(M,1,2) = __LH_M4E(M,1,3) = 0.f;
 
-	__LH_M4E(M,2,0) = (r+l)/(r-l);
-	__LH_M4E(M,2,1) = (t+b)/(t-b);
-	__LH_M4E(M,2,2) = -(f+n)/(f-n);
+	__LH_M4E(M,2,0) = (r+l) / (r-l);
+	__LH_M4E(M,2,1) = (t+b) / (t-b);
+	__LH_M4E(M,2,2) = -(f+n) / (f-n);
 	__LH_M4E(M,2,3) = -1.f;
 
-	__LH_M4E(M,3,2) = -2.f*(f*n)/(f-n);
+	__LH_M4E(M,3,2) = -2.f * (f*n) / (f-n);
 	__LH_M4E(M,3,0) = __LH_M4E(M,3,1) = __LH_M4E(M,3,3) = 0.f;
 }
 static inline void mat4x4_ortho(mat4x4 M, float l, float r, float b, float t, float n, float f)
 {
-	__LH_M4E(M,0,0) = 2.f/(r-l);
+	__LH_M4E(M,0,0) = 2.f / (r-l);
 	__LH_M4E(M,0,1) = __LH_M4E(M,0,2) = __LH_M4E(M,0,3) = 0.f;
 
-	__LH_M4E(M,1,1) = 2.f/(t-b);
+	__LH_M4E(M,1,1) = 2.f / (t-b);
 	__LH_M4E(M,1,0) = __LH_M4E(M,1,2) = __LH_M4E(M,1,3) = 0.f;
 
-	__LH_M4E(M,2,2) = -2.f/(f-n);
+	__LH_M4E(M,2,2) = -2.f / (f-n);
 	__LH_M4E(M,2,0) = __LH_M4E(M,2,1) = __LH_M4E(M,2,3) = 0.f;
 
-	__LH_M4E(M,3,0) = -(r+l)/(r-l);
-	__LH_M4E(M,3,1) = -(t+b)/(t-b);
-	__LH_M4E(M,3,2) = -(f+n)/(f-n);
+	__LH_M4E(M,3,0) = -(r+l) / (r-l);
+	__LH_M4E(M,3,1) = -(t+b) / (t-b);
+	__LH_M4E(M,3,2) = -(f+n) / (f-n);
 	__LH_M4E(M,3,3) = 1.f;
 }
 static inline void mat4x4_perspective(mat4x4 m, float y_fov, float aspect, float n, float f)
@@ -475,7 +489,7 @@ static inline void mat4x4_perspective(mat4x4 m, float y_fov, float aspect, float
 	  linmath.h uses radians for everything!
 	*/
 
-	float const a = 1.f / tanf(y_fov / 2.f);
+	float const a = 1.f / tanf(y_fov/2.f);
 
 	__LH_M4E(m,0,0) = a / aspect;
 	__LH_M4E(m,0,1) = 0.f;
@@ -542,6 +556,10 @@ static inline void mat4x4_look_at(mat4x4 m, vec3 eye, vec3 center, vec3 up)
 	mat4x4_translate_in_place(m, -eye[0], -eye[1], -eye[2]);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Quaternions type: quat / quat_t
+////////////////////////////////////////////////////////////////////////////////
+
 typedef vec4 quat;
 typedef union {
 	quat q;
@@ -593,10 +611,10 @@ static inline void quat_conj(quat r, quat q)
 }
 static inline void quat_rotate(quat r, float angle, vec3 axis) {
 	vec3 v;
-	vec3_scale(v, axis, sinf(angle / 2));
+	vec3_scale(v, axis, sinf(angle/2));
 	for(int i=0; i<3; ++i)
 		r[i] = v[i];
-	r[3] = cosf(angle / 2);
+	r[3] = cosf(angle/2);
 }
 #define quat_norm vec4_norm
 static inline void quat_mul_vec3(vec3 r, quat q, vec3 v)
@@ -606,6 +624,7 @@ static inline void quat_mul_vec3(vec3 r, quat q, vec3 v)
 	    t = 2 * cross(q.xyz, v)
 	    v' = v + q.w * t + cross(q.xyz, t)
 	*/
+
 	vec3 t;
 	vec3 q_xyz = {q[0], q[1], q[2]};
 	vec3 u = {q[0], q[1], q[2]};
@@ -631,17 +650,17 @@ static inline void mat4x4_from_quat(mat4x4 M, quat q)
 	float d2 = d*d;
 
 	__LH_M4E(M,0,0) = a2 + b2 - c2 - d2;
-	__LH_M4E(M,0,1) = 2.f*(b*c + a*d);
-	__LH_M4E(M,0,2) = 2.f*(b*d - a*c);
+	__LH_M4E(M,0,1) = 2.f * (b*c + a*d);
+	__LH_M4E(M,0,2) = 2.f * (b*d - a*c);
 	__LH_M4E(M,0,3) = 0.f;
 
-	__LH_M4E(M,1,0) = 2.f*(b*c - a*d);
+	__LH_M4E(M,1,0) = 2.f * (b*c - a*d);
 	__LH_M4E(M,1,1) = a2 - b2 + c2 - d2;
-	__LH_M4E(M,1,2) = 2.f*(c*d + a*b);
+	__LH_M4E(M,1,2) = 2.f * (c*d + a*b);
 	__LH_M4E(M,1,3) = 0.f;
 
-	__LH_M4E(M,2,0) = 2.f*(b*d + a*c);
-	__LH_M4E(M,2,1) = 2.f*(c*d - a*b);
+	__LH_M4E(M,2,0) = 2.f * (b*d + a*c);
+	__LH_M4E(M,2,1) = 2.f * (c*d - a*b);
 	__LH_M4E(M,2,2) = a2 - b2 - c2 + d2;
 	__LH_M4E(M,2,3) = 0.f;
 
@@ -675,7 +694,7 @@ static inline void mat4x4o_mul_quat(mat4x4 R, mat4x4 M, quat q)
 static inline void quat_from_mat4x4(quat q, mat4x4 M)
 {
 	float r = 0.f;
-	int perm[] = { 0, 1, 2, 0, 1 };
+	int perm[] = {0, 1, 2, 0, 1};
 	int *p = perm;
 
 	for(int i=0; i<3; i++) {
@@ -695,9 +714,9 @@ static inline void quat_from_mat4x4(quat q, mat4x4 M)
 	}
 
 	q[0] = r/2.f;
-	q[1] = ( __LH_M4E(M,p[0],p[1]) - __LH_M4E(M,p[1],p[0]) )/(2.f*r);
-	q[2] = ( __LH_M4E(M,p[2],p[0]) - __LH_M4E(M,p[0],p[2]) )/(2.f*r);
-	q[3] = ( __LH_M4E(M,p[2],p[1]) - __LH_M4E(M,p[1],p[2]) )/(2.f*r);
+	q[1] = ( __LH_M4E(M,p[0],p[1]) - __LH_M4E(M,p[1],p[0]) ) / (2.f*r);
+	q[2] = ( __LH_M4E(M,p[2],p[0]) - __LH_M4E(M,p[0],p[2]) ) / (2.f*r);
+	q[3] = ( __LH_M4E(M,p[2],p[1]) - __LH_M4E(M,p[1],p[2]) ) / (2.f*r);
 }
 
 #undef __LH_M4E
