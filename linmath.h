@@ -28,9 +28,9 @@
 /*
   Union vec#_t types support unnamed vector elements access when
   supported by compiler - that is, for example,
-  	vec#_t.x = 1.0f;
+    vec#_t.x = 1.0f;
   instead of
-  	vec#_t.i.x = 1.0f;
+    vec#_t.i.x = 1.0f;
   Note that the named syntax (with ".i") is provided in any way for those who
   don't want to use less portable unnamed syntax.
 */
@@ -542,7 +542,12 @@ static inline void mat4x4_look_at(mat4x4 m, vec3 eye, vec3 center, vec3 up)
 	mat4x4_translate_in_place(m, -eye[0], -eye[1], -eye[2]);
 }
 
-typedef float quat[4];
+typedef vec4 quat;
+typedef union {
+	quat q;
+	__LH_VECTOR_STRUCT(x,y,z,w);
+} quat_t;
+
 static inline void quat_identity(quat q)
 {
 	q[0] = q[1] = q[2] = 0.f;
