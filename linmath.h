@@ -2,9 +2,10 @@
 #define LINMATH_H
 
 #include <math.h>
+#include <float.h>
 
 #ifndef LINMATH_H_NEAR_ZERO
-	#define LINMATH_H_NEAR_ZERO (1e-6)
+	#define LINMATH_H_NEAR_ZERO FLT_EPSILON
 #endif
 
 /*
