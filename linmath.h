@@ -570,6 +570,15 @@ typedef union {
 	__LH_VECTOR_STRUCT(x,y,z,w);
 } quat_t;
 
+#ifndef LINMATH_H_NO_BUILDERS
+	#define QUAT(x,y,z,w)     (quat){x,y,z,w}
+	#define iQUAT_T(x,y,z,w)  {.v={x,y,z,w}}
+	#define QUAT_T(x,y,z,w)   (quat_t)iQUAT_T(x,y,z,w)
+	#define cQUAT_T(v4)       QUAT_T(v4[0],v4[1],v4[2],v4[3])
+#endif
+
+#define quat_norm vec4_norm
+
 static inline void quat_identity(quat q)
 {
 	q[0] = q[1] = q[2] = 0.f;
@@ -620,7 +629,6 @@ static inline void quat_rotate(quat r, float angle, vec3 axis) {
 		r[i] = v[i];
 	r[3] = cosf(angle/2);
 }
-#define quat_norm vec4_norm
 static inline void quat_mul_vec3(vec3 r, quat q, vec3 v)
 {
 	/*
