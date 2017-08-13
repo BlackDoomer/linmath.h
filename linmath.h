@@ -632,7 +632,7 @@ static inline void quat_rotate(quat r, float angle, vec3 axis) {
 static inline void quat_mul_vec3(vec3 r, quat q, vec3 v)
 {
 	/*
-	  Method by Fabian 'ryg' Giessen (of Farbrausch):
+	  Method by Fabian 'ryg' Giesen (of Farbrausch):
 	    t = 2 * cross(q.xyz, v)
 	    v' = v + q.w * t + cross(q.xyz, t)
 	*/
